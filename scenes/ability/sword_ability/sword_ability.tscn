@@ -1,0 +1,90 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfvrij6fd8nf5"]
+
+[ext_resource type="Texture2D" uid="uid://ddemg1c62eklt" path="res://scenes/ability/sword_ability/sword.png" id="1_2mwtk"]
+
+[sub_resource type="Animation" id="Animation_r824e"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_b7uaw"]
+resource_name = "swing"
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.00608215, 0.193869, 0.443869, 0.741262),
+"transitions": PackedFloat32Array(1, 1.1487, 1.68, 1),
+"update": 0,
+"values": [0.0, -0.174533, 3.16952, 3.48787e-16]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0228081, 0.114801, 0.193869, 0.365156, 0.493869, 0.745064),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 5.65, 1),
+"update": 0,
+"values": [Vector2(2.08165e-12, 2.08165e-12), Vector2(1.25, 1.25), Vector2(1, 1), Vector2(2, 2), Vector2(1, 1), Vector2(2.08165e-12, 2.08165e-12)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.389258),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m3wgn"]
+_data = {
+"RESET": SubResource("Animation_r824e"),
+"swing": SubResource("Animation_b7uaw")
+}
+
+[node name="swordability" type="Node2D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "swing"
+libraries = {
+"": SubResource("AnimationLibrary_m3wgn")
+}
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_2mwtk")
+offset = Vector2(2.08165e-12, -4)
