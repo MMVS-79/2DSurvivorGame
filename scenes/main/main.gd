@@ -1,13 +1,13 @@
 extends Node
 
+## This gates restart input until the run has actually ended.
+var is_game_over := false
+
 ## Cache scene references once so UI and player events are easy to manage.
 ## `$ChildName` is Godot shorthand for getting a node by its scene path.
 @onready var player = $Player
 @onready var health_label: Label = $UI/HealthLabel
 @onready var game_over_panel: Control = $UI/GameOverPanel
-
-## This gates restart input until the run has actually ended.
-var is_game_over := false
 
 
 func _ready():

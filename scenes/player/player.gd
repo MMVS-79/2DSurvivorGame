@@ -1,11 +1,11 @@
 extends CharacterBody2D
 
-const MAX_SPEED = 200
-
 ## UI and scene controllers listen to these signals instead of polling player state.
 ## A `signal` is Godot's event system: other nodes can connect to it and react when it emits.
 signal health_changed(current_health: int, max_health: int)
 signal died
+
+const MAX_SPEED = 200
 
 ## Exported stats let us tune survivability from the inspector later if needed.
 @export var max_health := 5
@@ -45,7 +45,7 @@ func _process(delta):
 
 
 func get_movement_vector():
-	## Convert input strengths into a direction vector so keyboard and future gamepad input fit the same path.
+	## Convert input strengths into a direction vector for keyboard and future gamepad input.
 	## `Input.get_action_strength(...)` returns a number from 0 to 1 for an input action.
 	var x_movement = (
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left")

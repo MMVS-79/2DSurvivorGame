@@ -7,12 +7,12 @@ const MAX_SPEED = 75
 @export var contact_damage := 1
 @export var damage_interval := 1.0
 
+## This cooldown stops one enemy from deleting the player instantly on overlap.
+var damage_cooldown_remaining := 0.0
+
 ## The damage area handles overlap-based touch damage separately from movement.
 ## `@onready` waits until the node exists in the scene tree before reading `$DamageArea`.
 @onready var damage_area: Area2D = $DamageArea
-
-## This cooldown stops one enemy from deleting the player instantly on overlap.
-var damage_cooldown_remaining := 0.0
 
 
 # Called when the node enters the scene tree for the first time.
