@@ -47,6 +47,12 @@ How to hand off manual work:
 - When adding new gameplay systems, err on the side of documenting signal flow, guard clauses, cooldown logic, and tuning assumptions.
 - Comments are important for continuity across sessions, but they do not replace correctness, clarity, or working code.
 
+## Verification Expectations
+
+- After changing any `.gd` files, run the local GDScript linter before wrapping up when the tool is available.
+- Prefer `gdlint $(find . -name '*.gd')` to catch ordering, formatting, and style issues early.
+- If lint cannot be run locally, say so clearly in the handoff.
+
 ## Roadmap Workflow
 
 When working in this repo:
