@@ -13,6 +13,9 @@ As of June 11, 2026, the prototype has:
 - A sword ability controller that spawns a sword swing on a timer.
 - A sword animation that plays and frees itself.
 - Sword hit detection that can damage enemies on overlap.
+- Sword swing logic that now aims toward the nearest enemy or player facing.
+- Sword attack cadence tuned faster so combat no longer waits `1.5` seconds between swings.
+- Player root, collision, and attack origin aligned so enemy tracking and melee placement match the visible sprite.
 - Basic enemy health and death handling.
 - Player health with temporary invulnerability after being hit.
 - Enemy contact damage.
@@ -125,8 +128,10 @@ A few current implementation notes to remember:
 
 - The player and enemy both use `CharacterBody2D`.
 - The player is found through the `"player"` group.
-- The sword is currently spawned at the player's global position every `1.5` seconds.
+- The sword currently swings on a much faster timer and is aimed by controller logic.
+- The player scene now uses an explicit attack anchor near the sprite instead of relying on a far-offset root setup.
 - The sword scene now applies overlap damage to enemies during the swing.
+- The sword now orients toward the nearest enemy and swings from the player's pivot instead of spinning in place.
 - The player now has health, invulnerability frames, and a game over state.
 - The main scene now includes a simple UI layer for HP and restart messaging.
 - Manual verification on June 11, 2026 confirmed the current placed enemy dies after one sword hit.

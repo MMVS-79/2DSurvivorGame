@@ -15,6 +15,8 @@ const MAX_SPEED = 200
 var health := max_health
 ## This timer prevents the player from getting hit every frame while overlapping an enemy.
 var invulnerability_remaining := 0.0
+## Keep the last useful facing so abilities still know where to attack while standing still.
+var facing_direction := Vector2.RIGHT
 ## Once dead, movement and damage handling should stop responding.
 var is_dead := false
 
@@ -40,6 +42,8 @@ func _process(delta):
 	## Movement stays simple for now: read input, normalize, then move at fixed speed.
 	var movement_vector = get_movement_vector()
 	var direction = movement_vector.normalized()
+	if direction != Vector2.ZERO:
+		facing_direction = direction
 	velocity = direction * MAX_SPEED
 	move_and_slide()
 
@@ -52,6 +56,16 @@ func get_movement_vector():
 	)
 	var y_movement = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	return Vector2(x_movement, y_movement)
+
+
+func get_aim_direction():
+	## Returning a cached facing direction keeps abilities stable when the player is not moving.
+	return facing_direction
+
+
+func get_attack_origin():
+	## `global_position` gives a node's world-space position instead of its local scene position.
+	return $AttackOrigin.global_position
 
 
 func take_damage(amount: int):
