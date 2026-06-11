@@ -1,6 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cfvrij6fd8nf5"]
+[gd_scene load_steps=7 format=3 uid="uid://cfvrij6fd8nf5"]
 
 [ext_resource type="Texture2D" uid="uid://ddemg1c62eklt" path="res://scenes/ability/sword_ability/sword.png" id="1_2mwtk"]
+[ext_resource type="Script" path="res://scenes/ability/sword_ability/sword_ability.gd" id="2_hf0h8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dsbou"]
+size = Vector2(10, 6)
 
 [sub_resource type="Animation" id="Animation_r824e"]
 length = 0.001
@@ -78,13 +82,21 @@ _data = {
 }
 
 [node name="swordability" type="Node2D"]
+script = ExtResource("2_hf0h8")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 autoplay = "swing"
 libraries = {
-"": SubResource("AnimationLibrary_m3wgn")
+	"": SubResource("AnimationLibrary_m3wgn")
 }
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_2mwtk")
 offset = Vector2(2.08165e-12, -4)
+
+[node name="HitArea" type="Area2D" parent="Sprite2D"]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/HitArea"]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_dsbou")

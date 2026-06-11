@@ -1,11 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhn8qqbrgg2gw"]
+[gd_scene load_steps=6 format=3 uid="uid://bhn8qqbrgg2gw"]
 
 [ext_resource type="PackedScene" uid="uid://uatvr8iwguhu" path="res://scenes/game_camera/game_camera.tscn" id="1_lge7y"]
 [ext_resource type="PackedScene" uid="uid://b0uctpsg0rged" path="res://scenes/player/player.tscn" id="1_qst3x"]
 [ext_resource type="TileSet" uid="uid://ba6s556hx1bt8" path="res://resources/tileset.tres" id="1_vlq0u"]
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_yhw3x"]
 [ext_resource type="PackedScene" uid="uid://ba583cqkxvwss" path="res://scenes/basic_enemy/basic_enemy.tscn" id="4_qfr3x"]
 
 [node name="main" type="Node"]
+script = ExtResource("1_yhw3x")
 
 [node name="GameCamera" parent="." instance=ExtResource("1_lge7y")]
 
@@ -18,3 +20,24 @@ layer_0/tile_data = PackedInt32Array(196609, 0, 4, 131074, 0, 4, 131075, 0, 4, 1
 
 [node name="basic_enemy" parent="." instance=ExtResource("4_qfr3x")]
 position = Vector2(205, 109)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HealthLabel" type="Label" parent="UI"]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 116.0
+offset_bottom = 31.0
+text = "HP: 5/5"
+
+[node name="GameOverPanel" type="CenterContainer" parent="UI"]
+visible = false
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="GameOverLabel" type="Label" parent="UI/GameOverPanel"]
+layout_mode = 2
+text = "Game Over
+Press any key to restart"
+horizontal_alignment = 1
+vertical_alignment = 1
