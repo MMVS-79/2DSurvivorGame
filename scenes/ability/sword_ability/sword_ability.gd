@@ -11,16 +11,26 @@ extends Node2D
 var hit_targets := {}
 ## Keep a reference to the spawning actor so the sword can follow while animating.
 var follow_target: Node2D = null
+## Cache whichever sword scene layout is present so both old and new setups still work.
+var sprite_node: Node2D = null
+var hit_area: Area2D = null
 
 
 func _ready():
 	## `_ready()` is a built-in Godot callback that runs once when this node enters the scene tree.
+	resolve_scene_nodes()
+
+	## If the scene structure is broken, fail quietly instead of crashing the whole run.
+	if sprite_node == null or hit_area == null:
+		push_warning("Sword scene is missing its visual or hit area nodes.")
+		return
+
 	## Position the pivoted blade parts after exported values are available.
-	$Pivot/Sprite2D.position = Vector2(blade_offset, 0.0)
-	$Pivot/HitArea.position = Vector2(blade_offset, 0.0)
+	sprite_node.position = Vector2(blade_offset, 0.0)
+	hit_area.position = Vector2(blade_offset, 0.0)
 
 	## Listen for overlap events from the sword's hit area.
-	$Pivot/HitArea.body_entered.connect(_on_hit_area_body_entered)
+	hit_area.body_entered.connect(_on_hit_area_body_entered)
 
 
 func _process(_delta):
@@ -47,6 +57,18 @@ func get_follow_origin():
 		return follow_target.global_position
 
 	return global_position
+
+
+func resolve_scene_nodes():
+	## Prefer the newer pivot-based structure, but support the older direct-node layout too.
+	sprite_node = get_node_or_null("Pivot/Sprite2D") as Node2D
+	hit_area = get_node_or_null("Pivot/HitArea") as Area2D
+
+	if sprite_node != null and hit_area != null:
+		return
+
+	sprite_node = get_node_or_null("Sprite2D") as Node2D
+	hit_area = get_node_or_null("Sprite2D/HitArea") as Area2D
 
 
 func _on_hit_area_body_entered(body: Node2D):
