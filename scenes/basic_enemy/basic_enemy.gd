@@ -6,9 +6,13 @@ const MAX_SPEED = 75
 @export var health := 1
 @export var contact_damage := 1
 @export var damage_interval := 1.0
+@export var recoil_speed := 250.0
+@export var recoil_duration := 0.25
 
 ## This cooldown stops one enemy from deleting the player instantly on overlap.
 var damage_cooldown_remaining := 0.0
+var recoil_time_remaining := 0.0
+var recoil_direction := Vector2.ZERO
 
 ## The damage area handles overlap-based touch damage separately from movement.
 ## `@onready` waits until the node exists in the scene tree before reading `$DamageArea`.
@@ -30,9 +34,17 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	assert(delta >= 0.0, "delta cannot be negative")
 	assert(damage_cooldown_remaining >= 0.0, "damage_cooldown_remaining cannot be negative")
-	## Enemies currently use simple homing movement toward the player.
-	var direction = get_direction_to_player()
-	velocity = direction * MAX_SPEED
+	assert(recoil_time_remaining >= 0.0, "recoil_time_remaining cannot be negative")
+	assert(recoil_direction.is_finite(), "recoil_direction must be finite")
+
+	if recoil_time_remaining > 0.0:
+		recoil_time_remaining = max(recoil_time_remaining - delta, 0.0)
+		velocity = recoil_direction * recoil_speed * (recoil_time_remaining / recoil_duration)
+	else:
+		## Enemies currently use simple homing movement toward the player.
+		var direction = get_direction_to_player()
+		velocity = direction * MAX_SPEED
+
 	var did_collide = move_and_slide()
 	assert(typeof(did_collide) == TYPE_BOOL, "move_and_slide must return boolean")
 
@@ -79,6 +91,7 @@ func process_contact_damage(delta: float) -> void:
 	## Count down first so overlap checks only fire when the enemy is allowed to damage again.
 	assert(delta >= 0.0, "delta cannot be negative")
 	assert(damage_area != null, "damage_area Area2D must be resolved")
+	assert(recoil_duration > 0.0, "recoil_duration must be positive")
 	damage_cooldown_remaining = max(damage_cooldown_remaining - delta, 0.0)
 	if damage_cooldown_remaining > 0.0:
 		return
@@ -92,4 +105,11 @@ func process_contact_damage(delta: float) -> void:
 		if body.has_method("take_damage"):
 			body.take_damage(contact_damage)
 			damage_cooldown_remaining = damage_interval
+
+			var direction = get_direction_to_player()
+			if direction == Vector2.ZERO:
+				recoil_direction = Vector2.UP
+			else:
+				recoil_direction = -direction
+			recoil_time_remaining = recoil_duration
 			return

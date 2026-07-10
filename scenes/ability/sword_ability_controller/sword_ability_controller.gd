@@ -8,23 +8,47 @@ extends Node
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	# $ is short hand for get_node()
 	assert(sword_ability != null, "sword_ability PackedScene must be assigned")
 	assert(attack_interval > 0.0, "attack_interval must be positive")
-	## Set the timer from code so the attack speed lives with the gameplay logic.
+
+	## Programmatic fallback to register 'attack' action if not already in InputMap.
+	if not InputMap.has_action("attack"):
+		InputMap.add_action("attack")
+
+		var space_event = InputEventKey.new()
+		space_event.physical_keycode = KEY_SPACE
+		InputMap.action_add_event("attack", space_event)
+
+		var click_event = InputEventMouseButton.new()
+		click_event.button_index = MOUSE_BUTTON_LEFT
+		InputMap.action_add_event("attack", click_event)
+
+	## Configure the cooldown timer programmatically.
 	var timer = get_node_or_null("Timer") as Timer
 	assert(timer != null, "Timer child node is missing")
+	timer.one_shot = true
+	timer.autostart = false
 	timer.wait_time = attack_interval
-	var err = timer.timeout.connect(on_timer_timeout)
-	assert(err == OK, "failed to connect timer timeout signal")
 
 
-func on_timer_timeout() -> void:
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	assert(delta >= 0.0, "delta time cannot be negative")
+	var timer = get_node_or_null("Timer") as Timer
+	assert(timer != null, "Timer child node is missing")
+
+	if Input.is_action_just_pressed("attack") and timer.is_stopped():
+		execute_attack()
+		timer.start()
+
+
+func execute_attack() -> void:
 	assert(get_tree() != null, "scene tree must be initialized")
-	assert(has_node("Timer"), "Timer child node must exist")
 	var player = get_tree().get_first_node_in_group("player") as Node2D
-	if player == null:
+	if player == null or player.is_dead:
 		return
+
+	assert(sword_ability != null, "sword_ability PackedScene must be assigned")
 
 	## Pick a sensible swing direction before spawning so the attack feels intentional.
 	var swing_direction = get_swing_direction(player)

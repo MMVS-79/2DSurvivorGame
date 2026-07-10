@@ -71,3 +71,13 @@ Keep roadmap updates lightweight and useful:
 - Mark completed milestones or tickets clearly.
 - Keep the "Next Recommended Ticket" actionable for a future chat handoff.
 - Prefer short, high-signal edits over verbose notes.
+
+## UI Design and Styling Expectations
+
+All user interface (UI) components added to this project must follow **Material Design 3 (MD3)** principles to maintain visual polish and design continuity:
+
+- **Consistent Color Palettes:** Use defined dynamic colors (Primary `#22c55e` for positive progress/success, surface colors `#1b1b1f` for cards, outlines `#3f4046` for boundaries, and soft translucent blacks for shadows).
+- **Rounded Shapes & Borders:** Apply StyleBoxFlat resources with standardized rounded corners (e.g., `6px` for progress bars/inner components, `12px` for dialog panels/cards) and outline borders (`1px` to `2px`).
+- **Layout Margins over Offsets:** Do not use absolute pixel offsets for UI positioning. Nest Controls inside standard containers (`MarginContainer`, `VBoxContainer`, `HBoxContainer`, `CenterContainer`) to ensure layout responsiveness and clean alignments.
+- **Smooth Easing Animations:** When displaying menus, panels, or changing values (such as health, progress, or timers), animate transitions using Godot's `Tween` system with cubic decelerate easing curves (`Tween.TRANS_CUBIC`, `Tween.EASE_OUT`).
+

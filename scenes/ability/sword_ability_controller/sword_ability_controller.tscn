@@ -10,4 +10,5 @@ attack_interval = 0.45
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.45
-autostart = true
+one_shot = true
+

@@ -10,16 +10,17 @@ As of July 10, 2026, the prototype has:
 - Player movement with `WASD` and arrow keys.
 - A camera that smoothly follows the player.
 - A basic enemy that moves directly toward the player.
-- A sword ability controller that spawns a sword swing on a timer.
-- A sword animation that plays and frees itself.
+- A sword ability controller that spawns a sword swing on manual Spacebar/Left-Click activation, rate-limited by a cooldown timer.
+- A snappy, arc-based sword slash animation (using easing, rapid sweep, and scale-out) that plays and frees itself.
 - Sword hit detection that can damage enemies on overlap.
 - Sword swing logic that now aims toward the nearest enemy or player facing.
 - Sword attack cadence tuned faster so combat no longer waits `1.5` seconds between swings.
 - Player root, collision, and attack origin aligned so enemy tracking and melee placement match the visible sprite.
 - Basic enemy health and death handling.
 - Player health with temporary invulnerability after being hit.
-- Enemy contact damage.
-- A simple HP HUD and restartable game over state.
+- Enemy contact damage and bounce-back recoil on hitting the player.
+- A Material Design 3 styled HP HUD with animated progress bar and card-elevated Game Over state.
+- A GitHub Actions workflow for linting/QA.
 - Manual playtest confirmation that the placed enemy dies in one hit.
 - Fully refactored codebase complying with NASA/JPL Power of 10 safety-critical code rules.
 
