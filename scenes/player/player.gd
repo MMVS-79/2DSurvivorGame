@@ -22,15 +22,19 @@ var is_dead := false
 
 
 # Called when the node enters the scene tree for the first time.
-func _ready():
+func _ready() -> void:
+	assert(max_health > 0, "max_health must be positive")
+	assert(invulnerability_duration >= 0.0, "invulnerability_duration cannot be negative")
 	health = max_health
 	## Emit the opening health value so the HUD is correct on scene load.
 	health_changed.emit(health, max_health)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(delta: float) -> void:
 	## `_process(delta)` runs every rendered frame, and `delta` is the time since the last frame.
+	assert(delta >= 0.0, "delta cannot be negative")
+	assert(invulnerability_remaining >= 0.0, "invulnerability_remaining cannot be negative")
 	if is_dead:
 		return
 
@@ -45,32 +49,42 @@ func _process(delta):
 	if direction != Vector2.ZERO:
 		facing_direction = direction
 	velocity = direction * MAX_SPEED
-	move_and_slide()
+	var did_collide = move_and_slide()
+	assert(typeof(did_collide) == TYPE_BOOL, "move_and_slide must return boolean")
 
 
-func get_movement_vector():
+func get_movement_vector() -> Vector2:
 	## Convert input strengths into a direction vector for keyboard and future gamepad input.
 	## `Input.get_action_strength(...)` returns a number from 0 to 1 for an input action.
 	var x_movement = (
 		Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	)
 	var y_movement = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+	assert(x_movement >= -1.0 and x_movement <= 1.0, "x_movement out of bounds")
+	assert(y_movement >= -1.0 and y_movement <= 1.0, "y_movement out of bounds")
 	return Vector2(x_movement, y_movement)
 
 
-func get_aim_direction():
+func get_aim_direction() -> Vector2:
 	## Returning a cached facing direction keeps abilities stable when the player is not moving.
+	assert(facing_direction != Vector2.ZERO, "facing_direction cannot be zero")
+	assert(facing_direction.is_normalized(), "facing_direction must be normalized")
 	return facing_direction
 
 
-func get_attack_origin():
+func get_attack_origin() -> Vector2:
 	## `global_position` gives a node's world-space position instead of its local scene position.
-	return $AttackOrigin.global_position
+	var attack_node = get_node_or_null("AttackOrigin")
+	assert(attack_node != null, "AttackOrigin node is missing")
+	assert(attack_node is Marker2D or attack_node is Node2D, "AttackOrigin must be a 2D node")
+	return attack_node.global_position
 
 
-func take_damage(amount: int):
+func take_damage(amount: int) -> void:
 	## `amount: int` means this function expects an integer damage value.
 	## Dead players and invulnerable players should not take repeated contact damage.
+	assert(amount >= 0, "damage amount cannot be negative")
+	assert(max_health > 0, "max_health must be positive")
 	if is_dead or invulnerability_remaining > 0.0:
 		return
 
@@ -85,7 +99,9 @@ func take_damage(amount: int):
 		die()
 
 
-func die():
+func die() -> void:
+	assert(health <= 0, "player must have 0 or less health to die")
+	assert(not is_dead, "player must not be already dead")
 	if is_dead:
 		return
 
