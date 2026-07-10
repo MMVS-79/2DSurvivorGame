@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://bhn8qqbrgg2gw"]
+[gd_scene load_steps=9 format=3 uid="uid://bhn8qqbrgg2gw"]
 
 [ext_resource type="PackedScene" uid="uid://uatvr8iwguhu" path="res://scenes/game_camera/game_camera.tscn" id="1_lge7y"]
 [ext_resource type="PackedScene" uid="uid://b0uctpsg0rged" path="res://scenes/player/player.tscn" id="1_qst3x"]
 [ext_resource type="TileSet" uid="uid://ba6s556hx1bt8" path="res://resources/tileset.tres" id="1_vlq0u"]
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_yhw3x"]
 [ext_resource type="PackedScene" uid="uid://ba583cqkxvwss" path="res://scenes/basic_enemy/basic_enemy.tscn" id="4_qfr3x"]
+[ext_resource type="StyleBox" path="res://resources/theme_progress_bg.tres" id="5_progress_bg"]
+[ext_resource type="StyleBox" path="res://resources/theme_progress_fill.tres" id="6_progress_fill"]
+[ext_resource type="StyleBox" path="res://resources/theme_card_bg.tres" id="7_card_bg"]
 
 [node name="main" type="Node"]
 script = ExtResource("1_yhw3x")
@@ -24,21 +27,67 @@ position = Vector2(205, 109)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="HealthLabel" type="Label" parent="UI"]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 116.0
-offset_bottom = 31.0
-text = "HP: 5/5"
+[node name="MarginContainer" type="MarginContainer" parent="UI"]
+offset_right = 200.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HPLabel" type="Label" parent="UI/MarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.901961, 0.901961, 0.901961, 1)
+theme_override_font_sizes/font_size = 14
+text = "HP"
+vertical_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="UI/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 12)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/background = ExtResource("5_progress_bg")
+theme_override_styles/fill = ExtResource("6_progress_fill")
+max_value = 1.0
+value = 1.0
+show_percentage = false
 
 [node name="GameOverPanel" type="CenterContainer" parent="UI"]
 visible = false
 offset_right = 640.0
 offset_bottom = 360.0
 
-[node name="GameOverLabel" type="Label" parent="UI/GameOverPanel"]
+[node name="CardContainer" type="PanelContainer" parent="UI/GameOverPanel"]
+custom_minimum_size = Vector2(280, 140)
 layout_mode = 2
-text = "Game Over
-Press any key to restart"
+theme_override_styles/panel = ExtResource("7_card_bg")
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/GameOverPanel/CardContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/GameOverPanel/CardContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="GameOverLabel" type="Label" parent="UI/GameOverPanel/CardContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.956863, 0.262745, 0.211765, 1)
+theme_override_font_sizes/font_size = 20
+text = "Game Over"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RestartLabel" type="Label" parent="UI/GameOverPanel/CardContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.901961, 0.901961, 0.901961, 0.705882)
+theme_override_font_sizes/font_size = 12
+text = "Press any key to restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+

@@ -21,7 +21,6 @@ As of July 10, 2026, the prototype has:
 - Enemy contact damage.
 - A simple HP HUD and restartable game over state.
 - Manual playtest confirmation that the placed enemy dies in one hit.
-- A GitHub Actions workflow for linting/QA.
 - Fully refactored codebase complying with NASA/JPL Power of 10 safety-critical code rules.
 
 Files that define the current gameplay loop:
