@@ -4,12 +4,12 @@ This file is our running checkpoint so new chats can quickly recover context.
 
 ## Current State
 
-As of July 10, 2026, the prototype has:
+As of July 11, 2026, the prototype has:
 
-- A main scene with a tilemap, player, camera, and one placed enemy.
+- A main scene with a tilemap, player, camera, and dynamic enemy spawner.
 - Player movement with `WASD` and arrow keys.
 - A camera that smoothly follows the player.
-- A basic enemy that moves directly toward the player.
+- Homing enemies that continuously spawn off-screen and walk toward the player.
 - A sword ability controller that spawns a sword swing on manual Spacebar/Left-Click activation, rate-limited by a cooldown timer.
 - A snappy, arc-based sword slash animation (using easing, rapid sweep, and scale-out) that plays and frees itself.
 - Sword hit detection that can damage enemies on overlap.
@@ -20,18 +20,21 @@ As of July 10, 2026, the prototype has:
 - Player health with temporary invulnerability after being hit.
 - Enemy contact damage and bounce-back recoil on hitting the player.
 - A Material Design 3 styled HP HUD with animated progress bar and card-elevated Game Over state.
+- A top-center HUD run timer displaying elapsed time (`MM:SS`).
+- Dynamic spawn difficulty scaling (spawn interval reduces by 10% every 30 seconds).
 - A GitHub Actions workflow for linting/QA.
-- Manual playtest confirmation that the placed enemy dies in one hit.
 - Fully refactored codebase complying with NASA/JPL Power of 10 safety-critical code rules.
 
 Files that define the current gameplay loop:
 
 - [project.godot](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/project.godot)
 - [scenes/main/main.tscn](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/main/main.tscn)
+- [scenes/main/main.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/main/main.gd)
 - [scenes/player/player.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/player/player.gd)
 - [scenes/basic_enemy/basic_enemy.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/basic_enemy/basic_enemy.gd)
 - [scenes/game_camera/game_camera.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/game_camera/game_camera.gd)
 - [scenes/ability/sword_ability_controller/sword_ability_controller.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/ability/sword_ability_controller/sword_ability_controller.gd)
+- [scenes/manager/enemy_manager/enemy_manager.gd](/Users/manujasenanayake/Documents/programming/2DSurvivorGame/scenes/manager/enemy_manager/enemy_manager.gd)
 
 ## What Is Missing
 
@@ -135,18 +138,18 @@ A few current implementation notes to remember:
 - The sword now orients toward the nearest enemy and swings from the player's pivot instead of spinning in place.
 - The player now has health, invulnerability frames, and a game over state.
 - The main scene now includes a simple UI layer for HP and restart messaging.
-- Manual verification on June 11, 2026 confirmed the current placed enemy dies after one sword hit.
-- The main scene currently contains one manually placed enemy, not a spawning system.
+- Manual verification on July 11, 2026 confirmed that the spawner continuously spawns enemies off-screen and the timer displays and halts correctly on death.
+- The main scene now spawns enemies continuously instead of a single placed enemy.
 
 ## Next Recommended Ticket
 
 Title:
 
-`Implement enemy spawning and basic run pacing`
+`Implement XP collection and leveling mechanics`
 
 Acceptance criteria:
 
-- Enemies can spawn repeatedly without manual placement.
-- Spawns appear around the play space rather than directly on top of the player.
-- The player can survive briefly at the start, then feel increasing pressure.
-- The new pacing is easy to test in short runs.
+- Defeated enemies spawn/drop an XP gem at their death position.
+- Walking close to an XP gem pulls it toward the player to collect it.
+- Collecting XP gems increments the player's XP.
+- Reaching maximum XP triggers a level-up, displaying a Material Design 3 upgrade selection panel to boost stats.

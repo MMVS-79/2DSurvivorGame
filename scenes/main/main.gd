@@ -2,6 +2,7 @@ extends Node
 
 ## This gates restart input until the run has actually ended.
 var is_game_over := false
+var time_elapsed := 0.0
 
 ## Cache scene references once so UI and player events are easy to manage.
 ## `$ChildName` is Godot shorthand for getting a node by its scene path.
@@ -9,6 +10,7 @@ var is_game_over := false
 @onready var health_bar: ProgressBar = $UI/MarginContainer/HBoxContainer/HealthBar
 @onready var game_over_panel: Control = $UI/GameOverPanel
 @onready var card_container: PanelContainer = $UI/GameOverPanel/CardContainer
+@onready var time_label: Label = $UI/TimeMarginContainer/TimeLabel
 
 
 func _ready() -> void:
@@ -16,6 +18,7 @@ func _ready() -> void:
 	assert(health_bar != null, "health bar must be cached")
 	assert(game_over_panel != null, "game over panel must be cached")
 	assert(card_container != null, "card container must be cached")
+	assert(time_label != null, "time label must be cached")
 
 	## The main scene reacts to player signals and updates UI accordingly.
 	## `connect(...)` hooks a signal to a function so this node can respond to player events.
@@ -27,6 +30,28 @@ func _ready() -> void:
 	## Force an initial HUD refresh in case the player emitted before UI was ready.
 	_on_player_health_changed(player.health, player.max_health)
 	game_over_panel.visible = false
+
+
+func _process(delta: float) -> void:
+	assert(delta >= 0.0, "delta cannot be negative")
+	assert(time_elapsed >= 0.0, "time_elapsed cannot be negative")
+	if is_game_over:
+		return
+
+	time_elapsed += delta
+	update_time_label()
+
+
+func update_time_label() -> void:
+	assert(time_label != null, "time_label must be cached")
+	assert(time_elapsed >= 0.0, "time_elapsed must be positive")
+
+	var minutes := floori(time_elapsed / 60.0)
+	var seconds := floori(time_elapsed - minutes * 60.0)
+	assert(minutes >= 0, "minutes cannot be negative")
+	assert(seconds >= 0 and seconds < 60, "seconds must be in bounds [0, 59]")
+
+	time_label.text = "%02d:%02d" % [minutes, seconds]
 
 
 func _unhandled_input(event: InputEvent) -> void:
